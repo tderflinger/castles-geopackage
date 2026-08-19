@@ -1,0 +1,40 @@
+name: Build GeoPackage
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - convert.sh
+      - .github/workflows/build-gpkg.yml
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install GDAL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gdal-bin
+
+      - name: Download castles.geojson and convert to GeoPackage
+        run: ./convert.sh
+
+      - name: Set release tag
+        id: tag
+        run: echo "tag=v$(date -u +'%Y.%m.%d')-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          files: castles.gpkg
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
