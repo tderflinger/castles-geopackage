@@ -2,6 +2,8 @@
 
 A Geopackage version of the [castlemap-dataset](https://github.com/Flightmussy/castlemap-dataset) from Flightmussy.
 
+Please find the latest release of the castlemap-dataset as a GeoPackage under "Releases".
+
 ## License
 
 MIT License
