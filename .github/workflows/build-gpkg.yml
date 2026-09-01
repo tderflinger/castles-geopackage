@@ -1,4 +1,4 @@
-name: Build GeoPackage
+name: Build castlemap-dataset GeoPackage (.gpkg)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,6 @@ on:
     branches:
       - main
     paths:
-      - convert.sh
       - .github/workflows/build-gpkg.yml
   schedule:
     - cron: '0 0 * * 0'
@@ -26,8 +25,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gdal-bin
 
-      - name: Download castles.geojson and convert to GeoPackage
-        run: ./convert.sh
+      - name: Convert castles.geojson to GeoPackage castles.gpkg
+        run: ogr2ogr -f GPKG -overwrite ./castles.gpkg ./castles.geojson
 
       - name: Set release tag
         id: tag
